@@ -6,7 +6,7 @@
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
                 <a href="{{ url('/user/export_pdf') }}" class="btn btn-primary"><i class="fa fa-file-pdf"></i>Export level</a> 
-                <button onclick="modalAction('{{ url('user/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
+                <button onclick="modalAction('{{ url('user/create_ajax') }}')" class="btn btn-sm btn-success mt-1"><i class="fa fa-plus"></i>Tambah Ajax</button>
             </div>
         </div>
         <div class="card-body">

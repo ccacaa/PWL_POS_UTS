@@ -2,91 +2,101 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\Validator;
-use App\Models\TransaksiModel;
 use App\Models\BarangModel;
-use App\Models\PenjualanModel;
+use App\Models\TransaksiDetailModel;
+use App\Models\TransaksiModel;
 use App\Models\UserModel;
-use App\Models\SupplierModel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\Facades\DataTables;
 
 class TransaksiController extends Controller
 {
-    // Menampilkan daftar transaksi penjualan
     public function index()
     {
         $breadcrumb = (object) [
-            'title' => 'Daftar Transaksi Penjualan',
-            'list' => ['Home', 'Penjualan']
+            'title' => 'Daftar Transaksi',
+            'list' => ['Home', 'Transaksi']
         ];
 
         $page = (object) [
-            'title' => 'Daftar Transaksi Penjualan'
+            'title' => 'Daftar transaksi yang terdaftar dalam sistem'
         ];
 
         $activeMenu = 'transaksi';
 
-        $penjualan = PenjualanModel::all();
-        $barang = BarangModel::all();
+        $transaksi = TransaksiModel::all();
 
-        return view('penjualan.index', [
-            'breadcrumb' => $breadcrumb,
-            'page' => $page,
-            'penjualan' => $penjualan,
-            'barang' => $barang,
-            'activeMenu' => $activeMenu
-        ]);
+        return view('transaksi.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'transaksi' => $transaksi, 'activeMenu' => $activeMenu]);
     }
 
-    // Menampilkan data transaksi untuk DataTables
     public function list(Request $request)
     {
-        $transaksi = TransaksiModel::select('detail_id', 'penjualan_id')->with('harga', 'jumlah');
+        $transaksis = TransaksiModel::select('penjualan_id', 'user_id', 'pembeli', 'penjualan_kode', 'penjualan_tanggal')->with('user');
 
-        // Filter data berdasarkan penjualan_id
-        if ($request->penjualan_id) {
-            $transaksi->where('penjualan_id', $request->penjualan_id);
-        }
-
-        // Mengembalikan data untuk DataTables
-        return DataTables::of($transaksi)
+        return DataTables::of($transaksis)
+            
             ->addIndexColumn()
-            ->addColumn('aksi', function ($stok) {
-                $btn = '<button onclick="modalAction(\'' . url('/stok/' . $stok->stok_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/stok/' . $stok->stok_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/stok/' . $stok->stok_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
+            ->addColumn('aksi', function ($transaksi) { 
+                $btn = '';
+                $btn  .= '<button onclick="modalAction(\'' . url('/transaksi/' . $transaksi->penjualan_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/transaksi/' . $transaksi->penjualan_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/transaksi/' . $transaksi->penjualan_id . '/delete_ajax') . '\')"  class="btn btn-danger btn-sm">Hapus</button> ';
                 return $btn;
             })
             ->rawColumns(['aksi'])
             ->make(true);
     }
 
-    // Menampilkan form untuk menambah transaksi
-    public function create_ajax()
-    {
-        $supplier = SupplierModel::select('supplier_id', 'supplier_nama')->get();
-        $user = UserModel::select('user_id', 'username')->get();
-        $barang = BarangModel::select('barang_id', 'barang_nama')->get();
 
-        return view('stok.create_ajax', [
-            'supplier' => $supplier,
-            'user' => $user,
-            'barang' => $barang
-        ]);
+    public function destroy(string $id)
+    {
+        $check = TransaksiModel::find($id);
+        if (!$check) {
+            return redirect('/transaksi')->with('error', 'Data transaksi tidak ditemukan');
+        }
+    
+        try {
+            // Hapus detail transaksi terlebih dahulu
+            TransaksiDetailModel::where('penjualan_id', $id)->delete();
+    
+            // Setelah detail dihapus, hapus transaksi utama
+            TransaksiModel::destroy($id);
+    
+            return redirect('/transaksi')->with('success', 'Data transaksi berhasil dihapus');
+        } catch (\Illuminate\Database\QueryException $e) {
+            return redirect('/transaksi')->with('error', 'Data transaksi gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
+        }
+    }
+    
+
+    public function show_ajax(string $id)
+    {
+        $transaksi = TransaksiModel::with(['user', 'transaksiDetail.barang'])->find($id);
+
+        return view('transaksi.show_ajax', ['transaksi' => $transaksi]);
     }
 
-    // Menyimpan data transaksi baru
+    public function create_ajax()
+    {
+        $user = UserModel::select('user_id', 'nama')->get();
+        $barang  = BarangModel::select('barang_id', 'barang_nama')->get();
+
+        return view('transaksi.create_ajax')->with('user', $user)->with('barang', $barang);
+    }
+
     public function store_ajax(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'supplier_id' => 'required|integer',
-                'barang_id' => 'required|integer',
                 'user_id' => 'required|integer',
-                'stok_tanggal' => 'required|date',
-                'stok_jumlah' => 'required|integer'
+                'pembeli' => 'required|string|max:100',
+                'penjualan_kode' => 'required|string|max:20|min:3|unique:t_penjualan,penjualan_kode',
+                'penjualan_tanggal' => 'required|date',
+                'transaksi_details.*.barang_id' => 'required|integer',
+                'transaksi_details.*.jumlah' => 'required|integer',
+                'transaksi_details.*.harga' => 'required|numeric',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -99,115 +109,163 @@ class TransaksiController extends Controller
                 ]);
             }
 
-            TransaksiModel::create($request->all());
+            // Create the transaction
+            $transaksi = TransaksiModel::create($request->only(['user_id', 'pembeli', 'penjualan_kode', 'penjualan_tanggal']));
+
+            // Add transaction details
+            foreach ($request->transaksi_details as $detail) {
+                TransaksiDetailModel::create([
+                    'penjualan_id' => $transaksi->penjualan_id,
+                    'barang_id' => $detail['barang_id'],
+                    'harga' => $detail['harga'],
+                    'jumlah' => $detail['jumlah'],
+                ]);
+            }
 
             return response()->json([
                 'status' => true,
-                'message' => 'Data stok berhasil disimpan',
+                'message' => 'Transaksi berhasil disimpan'
             ]);
         }
 
         return redirect('/');
     }
 
-    // Menampilkan form untuk mengedit transaksi
+
     public function edit_ajax(string $id)
     {
-        $stok = TransaksiModel::find($id);
-        $supplier = SupplierModel::select('supplier_id', 'supplier_nama')->get();
-        $user = UserModel::select('user_id', 'username')->get();
-        $barang = BarangModel::select('barang_id', 'barang_nama')->get();
+        $transaksi = TransaksiModel::with(['transaksiDetail.barang'])->find($id);
+        $user = UserModel::select('user_id', 'nama')->get();
+        $barang  = BarangModel::select('barang_id', 'barang_nama')->get();
 
-        return view('stok.edit_ajax', [
-            'stok' => $stok,
-            'supplier' => $supplier,
-            'user' => $user,
-            'barang' => $barang
-        ]);
+        // dd($transaksi->user);
+        return view('transaksi.edit_ajax', ['transaksi' => $transaksi, 'user' => $user, 'barang' => $barang]);
     }
 
-    // Memperbarui data transaksi
     public function update_ajax(Request $request, $id)
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'supplier_id' => 'required|integer',
-                'barang_id' => 'required|integer',
                 'user_id' => 'required|integer',
-                'stok_tanggal' => 'required|date',
-                'stok_jumlah' => 'required|integer'
+                'pembeli' => 'required|string|max:100',
+                'penjualan_kode' => 'required|string|max:20|min:3|unique:t_penjualan,penjualan_kode,' . $id . ',penjualan_id',
+                'penjualan_tanggal' => 'required|date',
+                'transaksi_details.*.barang_id' => 'required|integer',
+                'transaksi_details.*.jumlah' => 'required|integer',
+                'transaksi_details.*.harga' => 'required|numeric',
             ];
 
             $validator = Validator::make($request->all(), $rules);
+
             if ($validator->fails()) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Validasi gagal.',
-                    'msgField' => $validator->errors()
+                    'msgField' => $validator->errors(),
                 ]);
             }
 
-            $check = TransaksiModel::find($id);
-            if ($check) {
-                $check->update($request->all());
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Data berhasil diupdate'
-                ]);
-            } else {
+            $transaksi = TransaksiModel::find($id);
+            if (!$transaksi) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Data tidak ditemukan'
+                    'message' => 'Data tidak ditemukan',
                 ]);
             }
-        }
 
-        return redirect('/');
+            // Update main transaksi data
+            $transaksi->update($request->only(['user_id', 'pembeli', 'penjualan_kode', 'penjualan_tanggal']));
+
+            // Process transaction details (updating, deleting, and adding new)
+            $existingDetailIds = $transaksi->transaksiDetail->pluck('detail_id')->toArray();
+            $incomingDetailIds = array_keys($request->transaksi_details);
+
+            // Delete removed details
+            $toDelete = array_diff($existingDetailIds, $incomingDetailIds);
+            TransaksiDetailModel::destroy($toDelete);
+
+            // Update or create details
+            foreach ($request->transaksi_details as $detailId => $detailData) {
+                if (in_array($detailId, $existingDetailIds)) {
+                    // Update existing detail
+                    TransaksiDetailModel::where('detail_id', $detailId)->update($detailData);
+                } else {
+                    // Add new detail
+                    TransaksiDetailModel::create([
+                        'penjualan_id' => $transaksi->penjualan_id,
+                        'barang_id' => $detailData['barang_id'],
+                        'harga' => $detailData['harga'],
+                        'jumlah' => $detailData['jumlah'],
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data transaksi berhasil diubah.',
+            ]);
+        }
     }
 
-    // Menampilkan konfirmasi sebelum menghapus transaksi
+
     public function confirm_ajax(string $id)
     {
-        $stok = TransaksiModel::find($id);
-        return view('stok.confirm_ajax', ['stok' => $stok]);
+        $transaksi = TransaksiModel::with(['user', 'transaksiDetail.barang'])->find($id);
+
+        return view('transaksi.confirm_ajax', ['transaksi' => $transaksi]);
     }
 
-    // Menghapus data transaksi
-    public function delete_ajax(Request $request, $id)
-    {
-        if ($request->ajax() || $request->wantsJson()) {
-            $stok = TransaksiModel::find($id);
-            if ($stok) {
-                $stok->delete();
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Data berhasil dihapus'
-                ]);
-            } else {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Data tidak ditemukan'
-                ]);
-            }
+    public function delete_ajax(Request $request, string $id)
+{
+    if ($request->ajax() || $request->wantsJson()) {
+        $transaksi = TransaksiModel::find($id);
+
+        if ($transaksi) {
+            // Hapus semua detail transaksi terkait sebelum menghapus transaksi utama
+            TransaksiDetailModel::where('penjualan_id', $transaksi->penjualan_id)->delete();
+
+            $transaksi->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil dihapus'
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data tidak ditemukan'
+            ]);
         }
-
-        return redirect('/');
     }
+}
+
+
 
     public function export_pdf()
     {
-        set_time_limit(120);
-        $barang = TransaksiModel::select('kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')
-            ->orderBy('kategori_id')
-            ->orderBy('barang_kode')
-            ->with('kategori')
+        $transaksi = TransaksiModel::select('user_id', 'penjualan_kode', 'penjualan_tanggal', 'pembeli')
+            ->with('user')
             ->get();
 
-        $pdf = Pdf::loadView('barang.export_pdf', ['barang' => $barang]);
+        $pdf = Pdf::loadView('transaksi.export_pdf', ['transaksi' => $transaksi]);
         $pdf->setPaper('a4', 'potrait');
         $pdf->setOption('isRemoteEnabled', true);
         $pdf->render();
 
-        return $pdf->stream('Data Barang' . date('Y-m-d H:i:s') . '.pdf');
+        return $pdf->stream('Data Transaksi' . date('Y-m-d H:i:s') . '.pdf');
+    }
+
+    public function export_detail_pdf($id)
+    {
+        $transaksi = TransaksiModel::with(['user', 'transaksiDetail.barang'])->find($id);
+
+        // dd($transaksi->transaksiDetail);
+
+        $pdf = Pdf::loadView('transaksi.export_detail_pdf', ['transaksi' => $transaksi]);
+
+        $pdf->setPaper('a4', 'potrait');
+        $pdf->setOption('isRemoteEnabled', true);
+        $pdf->render();
+
+        return $pdf->stream('Data Transaksi' . date('Y-m-d H:i:s') . '.pdf');
     }
 }

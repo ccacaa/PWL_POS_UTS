@@ -1,18 +1,29 @@
-@extends('layouts.template')
-
-@section('content')
-    <div class="card card-outline card-primary">
-        <div class="card-header">
-            <h3 class="card-title">{{ $page->title }}</h3>
-            <div class="card-tools"></div>
-        </div>
-        <div class="card-body">
-            @empty($stok)
-                <div class="alert alert-danger alert-dismissible">
-                    <h5><i class="icon fas fa-ban"></i> Kesalahan!</h5>
-                    Data yang Anda cari tidak ditemukan.
+@empty($stok)
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Kesalahan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <h5><i class="icon fas fa-ban"></i> Kesalahan!!!</h5>
+                    Data yang anda cari tidak ditemukan
                 </div>
-            @else
+                <a href="{{ url('/stok') }}" class="btn btn-warning">Kembali</a>
+            </div>
+        </div>
+    </div>
+@else
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Detail data Stok</h5>
+                <button type="button" class="close" data-dismiss="modal" aria label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
                 <table class="table table-bordered table-striped table-hover table-sm">
                     <tr>
                         <th>ID</th>
@@ -28,23 +39,21 @@
                     </tr>
                     <tr>
                         <th>Nama User</th>
-                        <td>{{ $stok->user->username }}</td>
+                        <td>{{ $stok->user->nama }}</td>
                     </tr>
                     <tr>
-                        <th>Tanggal Stok</th>
-                        <td>{{ \Carbon\Carbon::parse($stok->stok_tanggal)->format('d M Y, H:i') }}</td>
+                        <th>Stok tanggal</th>
+                        <td>{{ $stok->stok_tanggal->format('Y-m-d') }}</td>
                     </tr>
                     <tr>
-                        <th>Jumlah Stok</th>
+                        <th>Stok jumlah</th>
                         <td>{{ $stok->stok_jumlah }}</td>
                     </tr>
                 </table>
-            @endempty
-            <a href="{{ route('stok.index') }}" class="btn btn-sm btn-default mt-2">Kembali</a>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-warning">Kembali</button>
+            </div>
         </div>
     </div>
-@endsection
-@push('css')
-@endpush
-@push('js')
-@endpush
+@endempty

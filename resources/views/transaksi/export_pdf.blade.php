@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <style>
@@ -92,28 +93,27 @@
             </td>
         </tr>
     </table>
-
-    <h3 class="text-center">LAPORAN DATA BARANG</h4>
+    <h3 class="text-center">LAPORAN DATA TRANSAKSI</h4>
         <table class="border-all">
             <thead>
                 <tr>
-                    <th>No</th>
-                    <th>Kode Barang</th>
-                    <th>Nama Barang</th>
-                    <th>Harga Beli</th>
-                    <th>Harga Jual</th>
-                    <th>Kategori</th>
+                    <th class="text-center">No</th>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>Kode Penjualan</th>
+                    <th>Pembeli</th>
+                    <th>Tanggal Transaksi</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($barang as $b)
+                @foreach ($transaksi as $b)
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
-                        <td>{{ $b->barang_kode }}</td>
-                        <td>{{ $b->barang_nama }}</td>
-                        <td class="text-right">{{ number_format($b->harga_beli, 0, ',', '.') }}</td>
-                        <td class="text-right">{{ number_format($b->harga_jual, 0, ',', '.') }}</td>
-                        <td>{{ $b->kategori->kategori_nama }}</td>
+                        <td>{{ $b->user->user_id }}</td>
+                        <td>{{ $b->user->username }}</td>
+                        <td>{{ $b->penjualan_kode }}</td>
+                        <td>{{ $b->pembeli }}</td>
+                        <td>{{ $b->penjualan_tanggal }}</td>
                     </tr>
                 @endforeach
             </tbody>
