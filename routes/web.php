@@ -37,10 +37,8 @@ Route::get('logout', [AuthController::class, 'logout']);
 Route::get('/landing', [LandingPageController::class, 'index']);
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Route untuk menampilkan profil
-    Route::get('/profile', [UserController::class, 'showProfile'])->name('profile');
-    // Route untuk update profil (termasuk upload gambar)
-    Route::post('/profile/upload', [UserController::class, 'uploadProfilePicture'])->name('profile.upload');
+Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+Route::patch('/{id}', [ProfileController::class, 'update'])->name('profile.update');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [WelcomeController::class, 'index']);
@@ -171,14 +169,14 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/create_ajax', [StokController::class, 'create_ajax']); // Menampilkan halaman form tambah supplier Ajax
             Route::post('/ajax', [StokController::class, 'store_ajax']); // Menyimpan data stok baru Ajax
             Route::post('/', [StokController::class, 'store']);             // menyimpan data stok baru
-            Route::get('/{id}', [StokController::class, 'show']);           // menampilkan detail stok
+            // Route::get('/{id}', [StokController::class, 'show']);           // menampilkan detail stok
             Route::get('/{id}/edit', [StokController::class, 'edit']);     // menampilkan halaman form edit stok
             Route::put('/{id}', [StokController::class, 'update']);         // menyiapkan perubahan data stok
-            Route::get('/{id}/show_ajax', [StokController::class, 'show_ajax']);
-            Route::get('/{id}/show', [StokController::class, 'show']);
+            // Route::get('/{id}/show', [StokController::class, 'show']);
             Route::get('/{id}/edit_ajax', [StokController::class, 'edit_ajax']); // Menampilkan halaman form edit stok Ajax 
             Route::put('/{id}/update_ajax', [StokController::class, 'update_ajax']); // Menyimpan perubahan data stok Ajax
             Route::get('/{id}/delete_ajax', [StokController::class, 'confirm_ajax']); // Untuk tampilkan form confirm delete stok Ajax
+            Route::get('/{id}/show_ajax', [StokController::class, 'show_ajax']);
             Route::get('/export_pdf', [StokController::class, 'export_pdf']);
             Route::delete('/{id}/delete_ajax', [StokController::class, 'delete_ajax']); // Untuk hapus data stok Ajax
             Route::delete('/{id}', [StokController::class, 'destroy']);     // menghapus data stok
@@ -187,6 +185,7 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
+ 
     Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
         Route::group(['prefix' => 'transaksi'], function () {
             Route::get('/', [TransaksiController::class, 'index']);

@@ -2,7 +2,7 @@
 <div class="card shadow" style="width: 18rem;">
     <div class="card-body text-center">
         <!-- Gambar Profil -->
-        <img src="{{ asset('img/default-profile.png') }}" alt="Profile" class="img-fluid rounded-circle mb-3" style="width: 80px; height: 80px;">
+        <img src="{{ asset('images/default-profile.jpg') }}" alt="Profile" class="img-fluid rounded-circle mb-3" style="width: 80px; height: 80px;">
         
         <!-- Username dari Database -->
         <h5 class="card-title">{{ Auth::user()->username }}</h5>

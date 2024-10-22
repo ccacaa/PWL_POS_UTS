@@ -100,23 +100,23 @@ class UserController extends Controller
     }
 
     //Menampilkan detail user 
-    public function show(string $id)
-    {
-        $user = UserModel::with('level')->find($id);
+    // public function show(string $id)
+    // {
+    //     $user = UserModel::with('level')->find($id);
 
-        $breadcrumb = (object) [
-            'title' => 'Detail User',
-            'list' => ['Home', 'User', 'Detail']
-        ];
+    //     $breadcrumb = (object) [
+    //         'title' => 'Detail User',
+    //         'list' => ['Home', 'User', 'Detail']
+    //     ];
 
-        $page = (object) [
-            'title' => 'Detail user',
-        ];
+    //     $page = (object) [
+    //         'title' => 'Detail user',
+    //     ];
 
-        $activeMenu = 'user'; //set menu yang sedang aktif
+    //     $activeMenu = 'user'; //set menu yang sedang aktif
 
-        return view('user.show', ['breadcrumb' =>  $breadcrumb, 'page' => $page, 'user' => $user, 'activeMenu' => $activeMenu]);
-    }
+    //     return view('user.show', ['breadcrumb' =>  $breadcrumb, 'page' => $page, 'user' => $user, 'activeMenu' => $activeMenu]);
+    // }
 
     //Menampilkan halaman form edit user
     public function edit(string $id)
@@ -322,5 +322,23 @@ class UserController extends Controller
         $pdf->setPaper ('a4', 'portrait'); // set ukuran kertas dan orientasi
         $pdf->setOption("isRemoteEnabled", true); // set true jika ada gambar dari url $pdf->render();
         return $pdf->stream ('Data User '.date('Y-m-d H:i:s').'.pdf');
+    }
+
+    public function show_ajax(string $id)
+    {
+        // Cari user berdasarkan id
+        $user = UserModel::find($id);
+
+        // Periksa apakah user ditemukan
+        if ($user) {
+            // Tampilkan halaman show_ajax dengan data user
+            return view('user.show_ajax', ['user' => $user]);
+        } else {
+            // Tampilkan pesan kesalahan jika user tidak ditemukan
+            return response()->json([
+                'status' => false,
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
     }
 }

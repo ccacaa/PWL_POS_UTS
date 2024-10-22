@@ -14,9 +14,9 @@
             @if(Auth::user()->avatar && file_exists(public_path('storage/photos/' . Auth::user()->avatar)))
                 <img src="{{ asset('storage/photos/' . Auth::user()->avatar) }}" class="rounded-circle" style="width: 30px; height: 30px;" alt="User Avatar">
             @else
-                <img src="{{ asset('img/default-profile.png') }}" class="rounded-circle" style="width: 30px; height: 30px;" alt="Default User Avatar">
+                <img src="{{ asset('images/default-profile.jpg') }}" class="rounded-circle" style="width: 30px; height: 30px;" alt="Default User Avatar">
             @endif
-            <span class="ml-2">{{ Auth::user()->username }}</span>
+            <span class="user-name" style="margin-right: 5px;">{{ Auth::user()->username}}</span> | <span class="user-level" style="margin-left: 5px;">{{ Auth::user()->level->level_nama}}</span>
         </a>
     
         <!-- Dropdown Menu -->
@@ -25,13 +25,14 @@
                 @if(Auth::user()->avatar && file_exists(public_path('storage/photos/' . Auth::user()->avatar)))
                     <img src="{{ asset('storage/photos/' . Auth::user()->avatar) }}" class="img-fluid rounded-circle" style="width: 80px; height: 80px;" alt="User Avatar">
                 @else
-                    <img src="{{ asset('images/default-profile.png') }}" class="img-fluid rounded-circle" style="width: 80px; height: 80px;" alt="Default User Avatar">
+                    <img src="{{ asset('images/default-profile.jpg') }}" class="img-fluid rounded-circle" style="width: 80px; height: 80px;" alt="Default User Avatar">
                 @endif
                 <p class="text-muted" style="margin-bottom: 5px;">Login sebagai {{ Auth::user()->role }}</p> <!-- Reduced margin-bottom -->
                 <h5 class="mt-1">{{ Auth::user()->username }}</h5> <!-- Adjusted margin-top to mt-1 -->
             </div>
     
-            <a class="dropdown-item text-center btn profile-btn my-2" href="{{ route('profile') }}" style="width: 100%;">Profile</a>
+            <a class="dropdown-item text-center btn profile-btn my-2" href="{{ route('profile.index') }}" style="width: 100%;">Profile</a>
+
 
             <!-- Link untuk logout -->
             <a href="{{ url('logout') }}" class="dropdown-item">

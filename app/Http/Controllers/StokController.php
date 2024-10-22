@@ -312,5 +312,11 @@ class StokController extends Controller
         // Render the PDF and return as a stream
         return $pdf->stream('Data_Stok_'.date('Y-m-d_H:i:s').'.pdf');
     }
+
+    public function show_ajax(string $stok_id)
+    {
+        $stok = StokModel::find($stok_id);
+        return view('stok.show', ['stok' => $stok]);
+    }
     
 }

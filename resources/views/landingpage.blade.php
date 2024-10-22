@@ -33,7 +33,7 @@
     <section class="home" id="home">
         <div class="swiper-slide slide" style="background: url('images/header-1.jpg') no-repeat; height: 100vh; display: flex; align-items: center; justify-content: flex-end;">
             <div class="content float-right" style="display: block;">
-                <h3 style="color: #736454; font-size: 6rem;">Selamat Datang di toko kue Cacake</h3>
+                <h3 style="color: #736454; font-size: 6rem;">Selamat Datang di toko bahan kue Cacake</h3>
                 <a href="{{route('login')}}" class="btn">Login</a>
             </div>
         </div>
@@ -50,10 +50,9 @@
                 <img src="{{ url('images/aboutus.jpg') }}" alt="">
             </div>
             <div class="content">
-                <h3>home made cake for you</h3>
-                <p>Selamat datang di Cacake! Kami adalah toko kue online yang berkomitmen untuk menyajikan kue-kue lezat dan indah untuk setiap kesempatan. Dengan visi menjadi pilihan utama para pecinta kue, kami menciptakan kue berkualitas tinggi yang tidak hanya enak, tetapi juga menarik secara visual.
-                    Tim kami terdiri dari para ahli pastry yang berdedikasi, menggunakan bahan-bahan terbaik untuk menghasilkan karya seni dalam setiap kue. Kami mengutamakan pelayanan pelanggan dan siap membantu Anda menemukan kue yang sempurna untuk momen spesial Anda.
-                    Bergabunglah dengan kami dan rasakan perbedaan Cacake dalam setiap gigitan!.</p>
+                <p>Selamat datang di Cacake! Kami adalah toko bahan kue yang menyediakan berbagai bahan berkualitas tinggi dan peralatan terbaik untuk memenuhi kebutuhan baking Anda.
+                    Dengan pengalaman bertahun-tahun, kami berkomitmen untuk membantu Anda menciptakan kue yang lezat dan indah. Tim kami siap memberikan tips dan saran untuk mendukung setiap kreasi Anda, baik untuk pemula maupun profesional.
+                    Bergabunglah dengan kami dan nikmati pengalaman baking yang menyenangkan. Terima kasih telah memilih Cacake—mari kita buat kue yang luar biasa bersama!</p>
             </div>
         </div>
     </section>

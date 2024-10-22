@@ -138,23 +138,23 @@ class BarangController extends Controller
         redirect('/');
     }
 
-    public function show(string $id)
-    {
-        $barang = BarangModel::with('kategori')->find($id);
+    // public function show(string $id)
+    // {
+    //     $barang = BarangModel::with('kategori')->find($id);
 
-        $breadcrumb = (object) [
-            'title' => 'Detail Barang',
-            'list'  => ['Home', 'barang', 'Detail']
-        ];
+    //     $breadcrumb = (object) [
+    //         'title' => 'Detail Barang',
+    //         'list'  => ['Home', 'barang', 'Detail']
+    //     ];
 
-        $page = (object) [
-            'title' => 'Detail Barang'
-        ];
+    //     $page = (object) [
+    //         'title' => 'Detail Barang'
+    //     ];
 
-        $activeMenu = 'barang';
+    //     $activeMenu = 'barang';
 
-        return view('barang.show', ['breadcrumb' => $breadcrumb, 'page' => $page, 'barang' => $barang, 'activeMenu' => $activeMenu]);
-    }
+    //     return view('barang.show', ['breadcrumb' => $breadcrumb, 'page' => $page, 'barang' => $barang, 'activeMenu' => $activeMenu]);
+    // }
 
     public function edit(string $id)
     {
@@ -440,5 +440,11 @@ class BarangController extends Controller
         $pdf->render();
 
         return $pdf->stream('Data Barang' . date('Y-m-d H:i:s') . '.pdf');
+    }
+
+    public function show_ajax(string $barang_id)
+    {
+        $barang = barangmodel::find($barang_id);
+        return view('barang.show_ajax', ['barang' => $barang]);
     }
 }
