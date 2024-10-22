@@ -31,7 +31,7 @@
                     </tr>
                     <tr>
                         <th>User</th>
-                        <td>{{ $transaksi->user->nama }}</td>
+                        <td>{{ $transaksi->user->name }}</td>
                     </tr>
                     <tr>
                         <th>Penjualan kode</th>
@@ -57,15 +57,12 @@
                                 <li id="detail-{{ $detail->detail_id }}">
                                     <span class="text">{{ $detail->barang->barang_nama }}</span>
 
-                                    <small class="badge badge-secondary" style="background-color: #FF9800;">
+                                    <small class="badge badge-secondary">
                                         Jumlah {{ $detail->jumlah }}
                                     </small>
-
-                                    <small class="badge badge-success" style="background-color: #205989;">
-                                        Harga {{ number_format($detail->harga) }}
+                                    <small class="badge badge-success">
+                                        Harga Rp{{ number_format($detail->harga) }}
                                     </small>
-
-
                                 </li>
                             @endforeach
                         </ul>
