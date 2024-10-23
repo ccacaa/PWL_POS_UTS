@@ -23,10 +23,9 @@
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
-    
-
     @stack('css') 
     <!-- DIgunakan untuk memanggil custom css dari perintah push('css') pda masing masing view -->
+   
 </head>
 
 <body class="hold-transition sidebar-mini">

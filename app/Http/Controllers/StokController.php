@@ -316,7 +316,7 @@ class StokController extends Controller
     public function show_ajax(string $stok_id)
     {
         $stok = StokModel::find($stok_id);
-        return view('stok.show', ['stok' => $stok]);
+        return view('stok.show_ajax', ['stok' => $stok]);
     }
     
 }

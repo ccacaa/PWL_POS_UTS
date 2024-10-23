@@ -17,7 +17,7 @@
 <body>
 
     <section class="header">
-        <a href="#" class="logo"> <i class="fas fa-birthday-cake"></i>Cacake</a>
+        <a href="#" class="logo"> <i class="fas fa-birthday-cake"></i>Toko Cacake</a>
 
         <nav class="navbar">
             <a href="#home">home</a>
@@ -51,8 +51,9 @@
             </div>
             <div class="content">
                 <p>Selamat datang di Cacake! Kami adalah toko bahan kue yang menyediakan berbagai bahan berkualitas tinggi dan peralatan terbaik untuk memenuhi kebutuhan baking Anda.
-                    Dengan pengalaman bertahun-tahun, kami berkomitmen untuk membantu Anda menciptakan kue yang lezat dan indah. Tim kami siap memberikan tips dan saran untuk mendukung setiap kreasi Anda, baik untuk pemula maupun profesional.
-                    Bergabunglah dengan kami dan nikmati pengalaman baking yang menyenangkan. Terima kasih telah memilih Cacake—mari kita buat kue yang luar biasa bersama!</p>
+                    Dengan pengalaman bertahun-tahun, kami berkomitmen untuk membantu Anda menciptakan kue yang lezat dan indah. Tim kami siap memberikan tips dan saran untuk mendukung setiap 
+                    kreasi Anda, baik untuk pemula maupun profesional.Bergabunglah dengan kami dan nikmati pengalaman baking yang menyenangkan. Terima kasih telah memilih Cacake—mari kita 
+                    buat kue yang luar biasa bersama!</p>
             </div>
         </div>
     </section>

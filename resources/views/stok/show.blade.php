@@ -30,16 +30,16 @@
                         <td>{{ $stok->stok_id }}</td>
                     </tr>
                     <tr>
-                        <th>Nama Supplier</th>
-                        <td>{{ $stok->supplier->supplier_nama }}</td>
+                        <th>ID Supplier</th>
+                        <td>{{ $stok->supplier->supplier_id }}</td>
                     </tr>
                     <tr>
-                        <th>Nama Barang</th>
-                        <td>{{ $stok->barang->barang_nama }}</td>
+                        <th>ID Barang</th>
+                        <td>{{ $stok->barang->barang_id }}</td>
                     </tr>
                     <tr>
-                        <th>Nama User</th>
-                        <td>{{ $stok->user->nama }}</td>
+                        <th>ID User</th>
+                        <td>{{ $stok->user->user_id }}</td>
                     </tr>
                     <tr>
                         <th>Stok tanggal</th>

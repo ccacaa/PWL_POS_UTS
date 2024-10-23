@@ -31,7 +31,7 @@
                     </tr>
                     <tr>
                         <th>User</th>
-                        <td>{{ $transaksi->user->name }}</td>
+                        <td>{{ $transaksi->user->nama }}</td>
                     </tr>
                     <tr>
                         <th>Penjualan kode</th>
