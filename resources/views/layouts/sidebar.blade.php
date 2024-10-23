@@ -129,23 +129,3 @@
     </nav>
 </div>
 
-<script>
-    function filterMenu() {
-        const input = document.getElementById('sidebarSearch');
-        const filter = input.value.toLowerCase();
-        const ul = document.getElementById("sidebarMenu");
-        const li = ul.getElementsByTagName('li');
-
-        for (let i = 0; i < li.length; i++) {
-            const a = li[i].getElementsByTagName("a")[0];
-            if (a) {
-                const txtValue = a.textContent || a.innerText;
-                if (txtValue.toLowerCase().indexOf(filter) > -1) {
-                    li[i].style.display = "";
-                } else {
-                    li[i].style.display = "none";
-                }
-            }       
-        }
-    }
-</script>
