@@ -31,7 +31,7 @@
                     </tr>
                     <tr>
                         <th>User</th>
-                        <td>{{ $transaksi->user->nama }}</td>
+                        <td>{{ $transaksi->user->name }}</td>
                     </tr>
                     <tr>
                         <th>Penjualan kode</th>
@@ -63,6 +63,10 @@
                                     <small class="badge badge-success">
                                         Harga Rp{{ number_format($detail->harga) }}
                                     </small>
+                                    @if ($detail->barang->image)
+                                        <img id="profile-picture" src="{{ $detail->barang->image }}" alt="Barang picture"
+                                            class="brand-image img-circle">
+                                    @endif
                                 </li>
                             @endforeach
                         </ul>
