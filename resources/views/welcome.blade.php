@@ -133,7 +133,7 @@
 
             @endif
 
-            @if (Auth::user()->level->level_nama == 'Staff')
+            @if (Auth::user()->level->level_nama == 'Staff/Kasir')
             
             <!-- Card Jumlah Kategori -->
             <div class="col-lg-6 col-6">
